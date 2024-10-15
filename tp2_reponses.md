@@ -16,6 +16,7 @@ fastcgi_param SCRIPT_FILENAME
 $document_root$fastcgi_script_name;
 include fastcgi_params;
 }
+
     ```docker network create tp2_network```
 
     ```docker run --name http -p 8080:80 --volume %cd%:/app --network tp2_network -d nginx```
