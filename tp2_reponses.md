@@ -18,15 +18,21 @@ include fastcgi_params;
 }
 
     ```docker run --name http -p 8080:80 --volume %cd%:/app --network tp2_network -d nginx```
+
     ```docker run --name script --volume %cd%:/app --network tp2_network -d bitnami/php-fpm```
+
     ```docker exec -it http bash```
+
     ```nano /etc/nginx/conf.d/default.conf```
+
     edit the line 30/36 and also the root path line 9
     location / {
         root   /app;
         index  index.php index.html index.htm;
     }
+
     ```exit```
+
     ```docker restart http```
 
 ## Etape 2
@@ -42,11 +48,15 @@ retournant un résultat différent et dépendant du contenu de la base de donné
 refresh de la page
 
     ```docker pull mariadb```
+
     ```docker run --name data --network tp2_network -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=mydb -d mariadb```
+
     // mariadb --user root -proot
+
     ```docker exec -it data mariadb --user root -proot -e "CREATE TABLE mydb.test_table (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255))"```
 
     create test_bdd.php in /app
+
     ```
         <?php
         $mysqli = new mysqli("data", "root", "root", "mydb");
@@ -83,12 +93,15 @@ Test de validité de l'exercice : avec un navigateur voir l'interface d'admin/in
 Wordpress afin de finaliser l'installation de celui-ci
 
     download wordpress on script container
+
     ``` curl -O https://wordpress.org/latest.tar.gz
         tar -xzvf latest.tar.gz
         mv wordpress/* /path/to/your/local/app
         rm latest.tar.gz
     ```
+
     create wordpress_db database 
+
     ``` docker exec -it data bash
         mariadb --user root -proot
         CREATE DATABASE wordpress_db;
@@ -98,6 +111,7 @@ Wordpress afin de finaliser l'installation de celui-ci
     Not using it becase it's not required in the end and/or we're lazy
 
     ```nano /etc/nginx/conf.d/default.conf```
+
         server {
             listen       80;
             listen  [::]:80;
@@ -151,6 +165,9 @@ Test de validité de l'exercice : identique à l'étape 3
     put the default.conf into a nginx/default.conf to use as volume for http container
     put wordpress into the current path to use it as volume for script container
     paste everything into all containers because i'm too lazy to create separate folder for this TP
+
     ```docker-compose up -d```
+
     https://localhost:8081
+    
     yay
